@@ -13,6 +13,7 @@
 \date{\today}
 
 \documentclass[14pt]{article}
+\usepackage{graphicx}
 \renewcommand{\baselinestretch}{1.3}
 
 \begin{document}
@@ -92,8 +93,21 @@ We know that LLBMC takes a program in C code and finally reports bugs. However i
   
 \end{itemize}
 
+\section{Software Bounded Model Checking}\label{Software Bounded Model Checking}
+Here we briefly recapitulate the main ideas of bounded model checking for software especially program written in C/C++. Generally programs are composed of data structures such as linked lists or trees. The unbounded nature of such data structures may give rise to infinite program runs. Which is very common systems e.g.  in reactive or interactive systems.  Property checking of such programs is in general undecidable.  Here bounded model checking provides a solution. BMC limits such program runs to finite ones, thereby achieving decidability. The bound is imposed by restricting the number of nested function calls and loop iterations that are considered. BMC performs function inlining and loop unrolling (up to these bounds), resulting in one large function that is then subject to further analysis. Since the analysis is done on the finite run of the program, it  can only look for bugs up to specific depth. This is good enough for many applications e.g. embedded systems. 
+
+
+
 \section{Previous work}\label{previous work}
 A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
+\begin{figure}[htb!]
+  \begin{centering}
+    \includegraphics[width=4cm]{figures/dummy.jpg}\par
+  \end{centering}
+  \caption{A simple dummy picture to demonstrate how
+           to include graphics into your report.}
+  \label{fig:dummy}
+\end{figure}
 
 
 \section{Results}\label{results}
