@@ -67,7 +67,7 @@ SMT-LIB is a functional language similar to LISP. SMT-LIB was created with the e
 Our approach can be summarized as follows: First, converting the multi-threaded code (we are working on C programs at the moment) to LLVM IR format with certain optimizations. Then converting this intermediate code to SMT-LIB format and creating a model of the program in a valid SMT formula. Lastly, giving this model to a SMT checker (MathSAT5) to find if the program has a bug for the given execution length. 
 
 
-\section{What is LLMBC}\label{overview-LLMBC}
+\section{What is LLMBC?}\label{overview-LLMBC}
 LLBMC (the low-level bounded model checker) is a static software analysis and verification tool for finding bugs in C (and, to some extent, in C++) programs. It is based on the technique of Bounded Model Checking. It is mainly intended for checking low-level system code.  It takes sequential C/C++ programs and finds bugs and runtime errors. It can help 
 software engineers to improve the quality of software and obtain stable and secure programs and reduce the time and effort needed for software testing. 
 
@@ -82,6 +82,15 @@ LLBMC is fully automatic and requires minimal preparation efforts and user inter
 We will explain more on these built-in-checks in subsequent sections. 
 
 The main limitation of LLBMC is its incompleteness. As it is just an implementation of the idea of BMC, its makes it incomplete due to incompleteness of the bounded analysis. Other limitations are it's high program-dependency and scalability. 
+
+\section{Why Low-Level}\label{Low-Level}
+We know that LLBMC takes a program in C code and finally reports bugs. However it does not directly work on source code. Applying BMC for verifying C programs is very hard and comes with many obstacles that have to be tackled. One of the most important differences is that the syntax (and thus semantics) of a high level programming language like C is much more complicated than a hardware description. Issues like memory allocation, (function) pointers, complex data structures, and function calls have to be managed. Further more going from C to C++ introduces more complex issues. Thats why instead of exploring the source code directly, LLBMC makes use of existing compiler technology and performs the analysis on an assembler-like compiler intermediate language. Such an intermediate language offers a much simpler syntax (and semantics), and thus eases a logical encoding of the verification problem considerably. We will describe more on how LLBMC uses LLVM-IR for the analysis. We can summarise the advantages of this approach as,
+\begin{itemize}
+   \item The IR has much simpler syntax and semantics than C/C++. This makes it relatively easy to support (nearly) all language features.
+     \item The program that is analysed is much closer to the program that is actually executed on the hardware since semantic ambiguities are resolved by the compiler. Furthermore, it becomes possible to analyze programs at various optimisation levels offered by the compiler.
+  \item It becomes possible to analyse programs in any language for which a compiler frontend that produces the IR is available.
+  
+\end{itemize}
 
 \section{Previous work}\label{previous work}
 A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
