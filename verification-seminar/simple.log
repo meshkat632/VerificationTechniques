@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.11.30)  1 JAN 2015 20:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.11.30)  1 JAN 2015 20:05
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -198,8 +198,20 @@ File: figures/llvm_ir_grammar.png Graphic file (type png)
 <use figures/llvm_ir_grammar.png>
 Package pdftex.def Info: figures/llvm_ir_grammar.png used on input line 149.
 (pdftex.def)             Requested size: 199.74576pt x 239.89565pt.
- [8 <./figures/bmc-example-2.png> <./figures/dummy.jpg>] [9 <./figures/llvm_ir_
-grammar.png>] [10] (./simple.aux)
+
+<figures/llvm_architecture.png, id=42, 856.19875pt x 521.95pt>
+File: figures/llvm_architecture.png Graphic file (type png)
+
+<use figures/llvm_architecture.png>
+Package pdftex.def Info: figures/llvm_architecture.png used on input line 157.
+(pdftex.def)             Requested size: 428.09833pt x 260.97435pt.
+
+Overfull \hbox (83.09833pt too wide) in paragraph at lines 157--157
+ [][] 
+ []
+
+[8 <./figures/bmc-example-2.png> <./figures/dummy.jpg>] [9 <./figures/llvm_ir_g
+rammar.png>] [10 <./figures/llvm_architecture.png>] [11] (./simple.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -208,10 +220,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 1562 strings out of 493117
- 22669 string characters out of 6135432
- 82378 words of memory out of 5000000
- 5023 multiletter control sequences out of 15000+600000
+ 1568 strings out of 493117
+ 22848 string characters out of 6135432
+ 82377 words of memory out of 5000000
+ 5028 multiletter control sequences out of 15000+600000
  9673 words of font info for 34 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,9n,23p,1457b,234s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -230,10 +242,10 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive
 /2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/
 2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti7.pfb></usr/local/texlive/20
 14/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on simple.pdf (10 pages, 336710 bytes).
+Output written on simple.pdf (11 pages, 374335 bytes).
 PDF statistics:
- 105 PDF objects out of 1000 (max. 8388607)
- 70 compressed objects within 1 object stream
+ 110 PDF objects out of 1000 (max. 8388607)
+ 72 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 26 words of extra memory for PDF output out of 10000 (max. 10000000)
 
