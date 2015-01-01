@@ -13,7 +13,7 @@
 \date{\today}
 
 \documentclass[14pt]{article}
-\renewcommand{\baselinestretch}{1.5}
+\renewcommand{\baselinestretch}{1.3}
 
 \begin{document}
 \maketitle
@@ -36,9 +36,9 @@ In industry we see the use of testing to ensure software quality and even to fin
 
 \section{Bounded Model Checking}\label{bounded model checking}
 
-Model checking is a method for formally verifying finite-state concurrent systems. Specifications about the system are expressed as temporal logic formulas, and efficient symbolic algorithms are used to traverse the model defined by the system and check if the specification holds or not. Extremely large state-spaces can often be traversed in minutes.
+Model checking is a method for formally verifying finite-state systems. Specifications about the system are expressed as temporal logic formulas, and efficient symbolic algorithms are used to traverse the model defined by the system and check if the specification holds or not. Extremely large state-spaces can often be traversed in minutes.
 					
-Bounded Model Checking is first proposed by Biere et. al. in 1999 ~\cite{Biere:01}. It doesn?t reduce the complexity of model checking however, it can solve many cases which cannot be solved by BDD (binary decision diagram) based techniques. However, BMC has the disadvantage of not being able to prove the program is valid because of its bounded state structure.
+Bounded Model Checking is first proposed by Biere et. al. in 1999 ~\cite{1}. It doesn't reduce the complexity of model checking however, it can solve many cases which cannot be solved by BDD (binary decision diagram) based techniques. However, BMC has the disadvantage of not being able to prove the program is valid because of its bounded state structure.
 					
 Idea of BMC is searching for a counterexample in the given problem until an execution length n. The BMC problem can be efficiently reduced to a propositional satisfiability problem and can be solved by SAT solvers. Modern SAT solvers can handle propositional satisfiability problems with 6-7 digit variables and sometimes more.
 					
@@ -47,6 +47,41 @@ However, as stated previously, BMC approach is used for finding bugs, not for pr
 In formally, bounded model checking contains: A transition system, a temporal logic formula and a user supplied bound k. Using these properties, we check if the given formula satisfied in the given bound.
 					
 In our work, the program flow is described as transition states for the BMC conversion. The easy transform between BMC and SMT formulas is highly beneficial because of the presence of highly optimised SMT solvers.
+
+\section{LLVM}\label{llvm}
+LLVM (Low Level Virtual Machine) is a compiler infrastructure; designed for compile-time, link-time, run-time, and "idle-time" optimization of programs written in different various programming languages. Initially designed for C and C++, LLVM now supports a lot of different languages like ActionScript, Ada, D, Fortran, GLSL, Haskell, Java, Julia, Objective-C, Python, Ruby, Rust, Scala.
+					
+LLVM supports a language-independent instruction set and type system. [3] Each instruction is in static single assignment form (SSA), meaning that each is assigned only once and cannot be assigned again. This helps simplify the analysis of dependencies among variables. LLVM allows code to be compiled statically, as it is under the traditional GCC system, or left for late-compiling from the IF to machine code in a just-in-time compiler (JIT) fashion similar to Java. The type system consists of primitive types such as integers or floats and five other derived types: Arrays, vectors, functions, structures and pointers. A type construct is represented by combining these given types in LLVM. For example, a class in C++ can be represented by a combination of structures, functions and arrays of function pointers.
+					
+LLVM is used in many areas because of its optimization supporting and competitive performance results. For example, Apple uses LLVM in its Xcode and Cocoa frameworks [10].
+					
+LLVM adapted SSA (Static Single Assignment) form. This provides serious advantages for formal conversions. The instruction set composed three address code instructions. Also, the LLVM instructions in Linux can generate CFG (control flow graphs) of the threads and the program which helps our conversion. Because LLVM-IR is represented in a similar format with 3 address assembly instructions, the adaptation period for unfamiliar users should not take very long, considering the developer already had some experience with Assembly. 
+
+\section{SMT-LIB}\label{SMT-LIB}
+Satisfiability Modulo Theories (SMT) have the aim of testing logical formulas for if they are satisfiable or not, using one or more theories. An SMT instance is a formula in first order logic, where some function and predicate symbols might have additional interpretations, and SMT is the problem of determining if such a formula is satisfiable. In other words, imagine an instance of the Boolean satisfiability problem (SAT) in which some of the binary variables are replaced by predicates over a suitable set of non-binary variables. A predicate is basically a binary-valued function of non-binary variables [5] [8].
+					
+One of the earlier attempts for solving SMT instances was translating them to SAT instances (e.g., a 32-bit integer variable would be encoded by 32 bit variables with appropriate weights) and passing this formula to a Boolean SAT solver because of the existing optimized SAT solvers. This approach, which is referred to as the eager approach, has its merits: by preprocessing the SMT formula into an equivalent Boolean SAT formula we can use existing Boolean SAT solvers "as-is" and leverage their performance and capacity improvements over time. However, the loss of the high-level semantics of the underlying theories means that the Boolean SAT solver has to work a lot harder than necessary to discover "obvious" facts (such as x + y = y + x for integer addition.) This observation led to the development of a number of SMT solvers that tightly integrate the Boolean reasoning of a DPLL-style search with theory specific solvers (T-solvers) that handle conjunctions (ANDs) of predicates from a given theory. This approach is referred to as the lazy approach [5] [7]. 
+
+SMT-LIB is a functional language similar to LISP. SMT-LIB was created with the expectation that the availability of common standards and a library of benchmarks would greatly facilitate the evaluation and the comparison of SMT systems, and advance the state of the art in the field in the same way as, for instance, the TPTP library has done for theorem proving, or the SATLIB library has done initially for SAT [6]. 
+
+Our approach can be summarized as follows: First, converting the multi-threaded code (we are working on C programs at the moment) to LLVM IR format with certain optimizations. Then converting this intermediate code to SMT-LIB format and creating a model of the program in a valid SMT formula. Lastly, giving this model to a SMT checker (MathSAT5) to find if the program has a bug for the given execution length. 
+
+
+\section{What is LLMBC}\label{overview-LLMBC}
+LLBMC (the low-level bounded model checker) is a static software analysis and verification tool for finding bugs in C (and, to some extent, in C++) programs. It is based on the technique of Bounded Model Checking. It is mainly intended for checking low-level system code.  It takes sequential C/C++ programs and finds bugs and runtime errors. It can help 
+software engineers to improve the quality of software and obtain stable and secure programs and reduce the time and effort needed for software testing. 
+
+LLBMC is fully automatic and requires minimal preparation efforts and user interaction. it models memory accesses (heap, stack, global variables) with high precision and is thus able to find hard-to-detect memory access errors like heap or stack buffer overflows. LLBMC can also uncover errors due to uninitialized variables or other sources of non-deterministic behaviours e.g.  
+\textit{integer overflow}, 
+\textit{division by zero},
+\textit{invalid bit shift},
+\textit{illegal memory access (array index out of bound, illegal pointer access, etc.)},
+\textit{invalid free},
+\textit{double free},
+\textit{user-customizable checks}.
+We will explain more on these built-in-checks in subsequent sections. 
+
+The main limitation of LLBMC is its incompleteness. As it is just an implementation of the idea of BMC, its makes it incomplete due to incompleteness of the bounded analysis. Other limitations are it's high program-dependency and scalability. 
 
 \section{Previous work}\label{previous work}
 A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
@@ -59,6 +94,23 @@ In this section we describe the results.
 We worked hard, and achieved very little.
 
 \begin{thebibliography}{9}
+\bibitem{bmc} 
+Edmund Clarke, Armin Biere, Richard Raimi and Yunshan Zhu
+\textit{Bounded Model Checking Using Satisfiability Solving}.
+
+\bibitem{1} 
+Armin Biere, Alessandro Cimatti, Edmund Clarke, Yunshan Zhu
+\textit{Symbolic Model Checking without BDDs}. 
+
+\bibitem{llbmc-web} 
+Stephan Falke, Florian Merz, Carsten Sinz
+\textit{The Bounded Model Checker LLBMC}. 
+http://llbmc.org/
+
+
+
+
+
 \bibitem{latexcompanion} 
 Michel Goossens, Frank Mittelbach, and Alexander Samarin. 
 \textit{The \LaTeX\ Companion}. 
