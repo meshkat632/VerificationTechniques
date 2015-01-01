@@ -94,7 +94,34 @@ We know that LLBMC takes a program in C code and finally reports bugs. However i
 \end{itemize}
 
 \section{Software Bounded Model Checking}\label{Software Bounded Model Checking}
-Here we briefly recapitulate the main ideas of bounded model checking for software especially program written in C/C++. Generally programs are composed of data structures such as linked lists or trees. The unbounded nature of such data structures may give rise to infinite program runs. Which is very common systems e.g.  in reactive or interactive systems.  Property checking of such programs is in general undecidable.  Here bounded model checking provides a solution. BMC limits such program runs to finite ones, thereby achieving decidability. The bound is imposed by restricting the number of nested function calls and loop iterations that are considered. BMC performs function inlining and loop unrolling (up to these bounds), resulting in one large function that is then subject to further analysis. Since the analysis is done on the finite run of the program, it  can only look for bugs up to specific depth. This is good enough for many applications e.g. embedded systems. 
+Here we briefly describe the main ideas of bounded model checking for software especially for programs written in C/C++. Generally programs are composed of data structures such as linked lists or trees. The unbounded nature of such data structures may give rise to infinite program runs. Which is very common in all kind of systems e.g.  in reactive or interactive systems.  Property checking of such programs is in general undecidable.  Here bounded model checking provides a solution. BMC limits such program runs to finite ones, thereby achieving decidability. The bound is imposed by restricting the number of nested function calls and loop iterations that are considered. BMC performs function inlining and loop unrolling (up to these bounds), resulting in one large function that is then subject to further analysis. Since the analysis is done on the finite run of the program, it  can only look for bugs up to specific depth. This is good enough for many applications e.g. embedded systems. 
+
+Here we will see an example of loop unrolling for a simple program. We assume that properties for the program are given by assertions from  the user. And we need to verify that these properties holds for the program where the loop iteration is bounded by number k. The states that the program can reach within this bound are represented symbolically by a formula, together with the negation of the given condition. Then this combined formula is feed to SAT solver. If the formula is satisfiable, then there exists a path in the program that violates the property.
+
+\begin{figure}[htb!]
+  \begin{centering}
+    \includegraphics[width=\textwidth]{figures/bmc-example-1}\par
+  \end{centering}
+  \caption{A simple dummy picture to demonstrate how
+           to include graphics into your report.}
+  \label{fig:mesh1}
+\end{figure}
+
+
+
+Consider the program in the left part of figure \ref{fig:mesh1}. The number of paths through this program is exponential in \(N\), as each of the \(a[i]\) elements can be either zero or nonzero. Despite the exponential number of paths through the program, its states can be encoded with a formula of size linear in \(N\), as demonstrated in the right part of the figure. This formula encodes the states of the original program on its left, using the static-single-assignment (SSA) form. 		 	 	 		
+
+\begin{figure}[htb!]
+  \begin{centering}
+    \includegraphics[width=0.80\textwidth]{figures/bmc-example-2}\par
+  \end{centering}
+  \caption{formula after all the rewrite is donw.}
+  \label{fig:mesh2}
+\end{figure}
+
+The ternary operator \(c?x:y\) in the equation on the right of figure \ref{fig:mesh1} can be rewritten using a disjunction, as shown in figure \ref{fig:mesh2}. After the rewrite we have the formula in DNF. Now to verify that some assertion provided by user holds at a specific, we add a constraint corresponding to the negation of this assertion. For example, to prove that at the end of the program \(c \leq N\) , we need to conjoin formula with \((c_{N+1}>N)\). Now we can test this combined formula for satisfiability. 
+
+
 
 
 
@@ -103,6 +130,14 @@ A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
 \begin{figure}[htb!]
   \begin{centering}
     \includegraphics[width=4cm]{figures/dummy.jpg}\par
+  \end{centering}
+  \caption{A simple dummy picture to demonstrate how
+           to include graphics into your report.}
+  \label{fig:dummy}
+\end{figure}
+\begin{figure}[htb!]
+  \begin{centering}
+    \includegraphics[width=\textwidth]{figures/bmc-example-1}\par
   \end{centering}
   \caption{A simple dummy picture to demonstrate how
            to include graphics into your report.}
