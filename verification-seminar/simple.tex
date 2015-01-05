@@ -151,7 +151,7 @@ Here we will explain how LLBMC model the verification problem. Figure \ref{fig:l
 
 \subsubsection*{LLVM Intermediate Representation}
 LLBMC makes extensive use of LLVM compiler framework. It uses the LLVM compiler front end to get the program in LLVM abstract assembler from program source code. Since programs in LLVM assembler are already in \textit{static single assignment (SSA)} form, assignments to scalar variables are treated as logical equivalences. However, other LLVM instructions need to be handled. 
-In the context of LLBMC the following LLVM instructions are important and we will show how each of these instructions are translated into the logic of bit-vectors and arrays. 
+In the context of LLBMC the following LLVM instructions are important and we will show how each of these instructions are translated into the logic of bit-vectors and arrays \cite{bit vectors and arrays}. 
 \begin{itemize}
   \item \textit{Three-address-code (TAC)} instructions working on registers or constants.
   \item \textit{Memory access and allocation} instructions, namely \texttt{load, store, malloc}, and \texttt{free}.
@@ -286,6 +286,10 @@ Computer-Aided Design of Integrated Circuits and Systems, IEEE Transactions on 2
 \bibitem{book decision procedures} 
 Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
 Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
+
+\bibitem{bit vectors and arrays} 
+Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
+Chapter 6 and 7,  Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
 
 \bibitem{llvm} 
 Chris Lattner, Vikram Adve.
