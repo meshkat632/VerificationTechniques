@@ -1,17 +1,3 @@
-\title{A Very Simple \LaTeXe{} Template}
-\author{
-        Vitaly Surazhsky \\
-                Department of Computer Science\\
-        Technion---Israel Institute of Technology\\
-        Technion City, Haifa 32000, \underline{Israel}
-            \and
-        Yossi Gil\\
-        Department of Computer Science\\
-        Technion---Israel Institute of Technology\\
-        Technion City, Haifa 32000, \underline{Israel}
-}
-\date{\today}
-
 \documentclass[14pt]{article}
 \usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{graphicx}
@@ -19,39 +5,55 @@
 \renewcommand{\baselinestretch}{1.3}
 
 \begin{document}
-\maketitle
 
-\begin{abstract}
-This is the paper's abstract \ldots
-\end{abstract}
+\begin{center}
+
+    Rheinisch-Westf\"alische Technische Hochschule Aachen \\
+    Research Group Computer Science 2\\
+    Prof. Dr. Jürgen Giesl\\[6ex]
+    Seminar: Verification Techniques in WS 2014/15\\[12ex]                          % auch Seminar Titel und Datum ändern!!!
+   
+    \LARGE
+    \textbf{Finding Hard Bugs in C with Bounded Model Checking} \\[6ex]
+    \textit{Meshkatul Anwer} \\[6ex]
+    \Large
+    Matrikelnummer 299508 \\[6ex]
+    Datum des Vortrages
+
+    \vfill
+    \Large Supervisor: Cornelius Aschermann
+	    
+\end{center}
+
 
 \section{Introduction}
-Correctness of computer systems is important in our software dependent society. We depend more and more on this modern computer systems. Such systems consist of complex hardware and software components. So correctness of both hardware and software is important. However, it is much harder to ensure the correctness of the software part of these systems. As the complexity of the software parts are getting more complex than that of the underlying hardware.  And manual inspection of complex software is error-prone and costly.  Numerous formal tools to find functional design bugs in hardware are available and in wide-spread use.  In contrast, the market for software verification tools is still in its infancy. A lot of research in this field is going on. We need highly automated method that provides rigorous guarantee of quality. These methods should be scalable enough to match the enormous complexity of software systems. Bounded model checking (BMC) of programs is one of such methods used for software verification. In this paper we will explore LLBMC, an implementation of the idea of  Bounded model checking.
+Correctness of computer systems is important in our software dependent society. We depend more and more on this modern computer systems. Such systems consist of complex hardware and software components. So correctness of both hardware and software is important. However, it is much harder to ensure the correctness of the software part of these systems. As the complexity of the software parts are getting more complex than that of the underlying hardware.  And manual inspection of complex software is error-prone and costly.  Numerous formal tools to find functional design bugs in hardware are available and in wide-spread use.  In contrast, the market for software verification tools is still in its infancy. A lot of research in this field is going on. We need highly automated method that provides rigorous guarantee of quality. These methods should be scalable enough to match the enormous complexity of software systems. Bounded model checking (BMC) of programs is one of such methods used for software verification. In this paper we will explore LLBMC, an implementation of the idea of Bounded model checking.
+
 
 \paragraph{Outline}
-The remainder of this article is organized as follows.
-Section~\ref{previous work} gives account of previous work.
-Our new and exciting results are described in Section~\ref{results}.
-Finally, Section~\ref{conclusions} gives the conclusions.
+The remainder of this article is organised as follows.
+Section~\ref{background} gives overview of the basic notions.
+Section~\ref{overview_of_llbmc} provides an overview of LLBMC tool.
+Section~\ref{Software Bounded Model Checking} gives a simple example BMC.
+Section~\ref{llbmc approach} gives overview of LLBMC approach.
+Finally, Section~\ref{summary and conclusion} gives the remarks and conclusions.
 
-\section{Verification problem}\label{verification problem}
-In industry we see the use of testing to ensure software quality and even to find bugs. However such quality guarantees do not reflect to "correctness" of  the system. As we know that ensuring the absence of all errors in a design is usually too expensive. So all testing based approaches e.g. random testing and automated test-case generation are incomplete.  The other approach depends on the fact that systems can be viewed as mathematical objects with well-specified behaviour. Or we can specify the system (intended behaviour) using mathematical logic. Then one can reason about whether the system meets its specification or not. This field of study has been active and it is often referred to as formal methods. The \textit{verification problem} is: Given program \textit{M} and specification \textit{h} determine whether or not the behaviour of \textit{M} meets the specification \textit{h}. The specification is formulated in mathematical logic. The model checking problem is an instance of the verification problem. Model checking provides an automated method for verifying finite state systems and checks it for certain properties. The method is algorithmic and often efficient because the system is finite state. If the check fails, that means the design has a bug. And, most of the time, the model checkers generate a counterexample how the bug is produced so the developer can easily figure out what is the mistake.
+\section{Background}\label{background}
+\subsubsection*{Verification problem}\label{verification problem}
+In industry we see the use of testing to ensure software quality and even to find bugs. However such quality guarantees do not reflect to \textit{correctness} of  the system. As we know that ensuring the absence of all errors in a design is usually too expensive. So all testing based approaches e.g. random testing and automated test-case generation are incomplete.  The other approach depends on the fact that systems can be viewed as mathematical objects with well-specified behaviour. Or we can specify the system (intended behaviour) using mathematical logic. Then one can reason about whether the system meets its specification or not. This field of study has been active and it is often referred to as formal methods.
+The \textit{verification problem} is: Given program \textit{C} and specification \textit{P} determine whether or not the behaviour of \textit{C} meets the specification \textit{P}. We need automatic procedure which will use concrete mathematical reasoning to report design bug.
 
-\section{Bounded Model Checking}\label{bounded model checking}
+\subsubsection*{Software Model Checking}\label{Software Model Checking}
+Model checking is an algorithmic method for determining if model of a system satisfies a correctness specification \cite{MC1},\cite{MC2}. A model of a program consists of \textit{states} and \textit{transitions}, and a specification or \textit{property} is a logical formula. A state of the program is an evaluation of the program counter, the values of variables and the configuration of the stack and the heap. Transitions describe how a program evolves from one state to another. Model checking algorithms exhaustively examine the reachable states of a program. This procedure is guaranteed to terminate if the state space is finite. If a state violating a correctness property is found, a \textit{counterexample} ? an execution trace demonstrating the error ? is produced. Model checking tools verify partial specifications, usually classified as \textit{safety} or \textit{liveness} properties. Where, safety properties express the unreachability of bad states, such as those in which an assertion violation, null pointer dereference or buffer overflow has occurred.  Liveness properties express that something good eventually happens, like the condition that requests must be served eventually, or that a program must eventually terminate \cite{MC3}.
 
-Model checking is a method for formally verifying finite-state systems. Specifications about the system are expressed as temporal logic formulas, and efficient symbolic algorithms are used to traverse the model defined by the system and check if the specification holds or not. Extremely large state-spaces can often be traversed in minutes.
+\subsubsection*{Bounded Model Checking}\label{bounded model checking}
+Model checking works only when the system has finite states. Which is not always true for the case of program or software system. Software systems or programs are inherently very complex and often exhibit infinite run. Here comes Bounded Model Checking,  the most commonly applied formal verification techniques in the semiconductor industry. The technique owes this success to the impressive
+capacity of propositional SAT solvers. 
 					
-Bounded Model Checking is first proposed by Biere et. al. in 1999 ~\cite{1}. It doesn't reduce the complexity of model checking however, it can solve many cases which cannot be solved by BDD (binary decision diagram) based techniques. However, BMC has the disadvantage of not being able to prove the program is valid because of its bounded state structure.
-					
-Idea of BMC is searching for a counterexample in the given problem until an execution length n. The BMC problem can be efficiently reduced to a propositional satisfiability problem and can be solved by SAT solvers. Modern SAT solvers can handle propositional satisfiability problems with 6-7 digit variables and sometimes more.
-					
-However, as stated previously, BMC approach is used for finding bugs, not for proving the program is valid because of the execution length. A greater execution length might show bugs which cannot be found for smaller execution lengths.
-					
-In formally, bounded model checking contains: A transition system, a temporal logic formula and a user supplied bound k. Using these properties, we check if the given formula satisfied in the given bound.
-					
-In our work, the program flow is described as transition states for the BMC conversion. The easy transform between BMC and SMT formulas is highly beneficial because of the presence of highly optimised SMT solvers.
+Bounded Model Checking is first proposed by Biere et. al. in 1999 ~\cite{1} as as a complementary technique to BDD-based unbounded model checking. In BMC, the design under verification is unwound \(k\) times together with a property to form a propositional formula, which is then passed to the SAT solver.
+The formula is satisfiable if and only if there is a trace of length \(k\) that refutes the property. The technique is inconclusive if the formula is unsatisfiable, as there may be counterexamples longer than \(k\) steps. Nevertheless, the technique is successful, as many bugs have been identified that would otherwise have gone unnoticed. Later we will see how LLBMC implements this idea.
 
-\section{LLVM}
+\subsubsection*{LLVM}
 LLVM (Low Level Virtual Machine)   \cite{llvm} is a compiler infrastructure; designed for compile-time, link-time, run-time, and idle-time optimisation of programs written in different various programming languages. Initially designed for C and C++, LLVM now supports a lot of different high level languages.
 
 LLBMC uses the LLVM compiler framework and its intermediate representation LLVM-IR. This makes it possible to use LLBMC
@@ -61,17 +63,9 @@ The use of SSA form makes it easier to write optimisations. LLVM compiler framew
 
 LLVM compiler framework also provide libraries for re-use.  LLBMC uses the LLVM libraries to do few transformation(specially for  function inlining and loop unrolling). 
 
-\section{SMT-LIB}\label{SMT-LIB}
-Satisfiability Modulo Theories (SMT) have the aim of testing logical formulas for if they are satisfiable or not, using one or more theories. An SMT instance is a formula in first order logic, where some function and predicate symbols might have additional interpretations, and SMT is the problem of determining if such a formula is satisfiable. In other words, imagine an instance of the Boolean satisfiability problem (SAT) in which some of the binary variables are replaced by predicates over a suitable set of non-binary variables. A predicate is basically a binary-valued function of non-binary variables [5] [8].
-					
-One of the earlier attempts for solving SMT instances was translating them to SAT instances (e.g., a 32-bit integer variable would be encoded by 32 bit variables with appropriate weights) and passing this formula to a Boolean SAT solver because of the existing optimized SAT solvers. This approach, which is referred to as the eager approach, has its merits: by preprocessing the SMT formula into an equivalent Boolean SAT formula we can use existing Boolean SAT solvers "as-is" and leverage their performance and capacity improvements over time. However, the loss of the high-level semantics of the underlying theories means that the Boolean SAT solver has to work a lot harder than necessary to discover "obvious" facts (such as x + y = y + x for integer addition.) This observation led to the development of a number of SMT solvers that tightly integrate the Boolean reasoning of a DPLL-style search with theory specific solvers (T-solvers) that handle conjunctions (ANDs) of predicates from a given theory. This approach is referred to as the lazy approach [5] [7]. 
-
-SMT-LIB is a functional language similar to LISP. SMT-LIB was created with the expectation that the availability of common standards and a library of benchmarks would greatly facilitate the evaluation and the comparison of SMT systems, and advance the state of the art in the field in the same way as, for instance, the TPTP library has done for theorem proving, or the SATLIB library has done initially for SAT [6]. 
-
-Our approach can be summarized as follows: First, converting the multi-threaded code (we are working on C programs at the moment) to LLVM IR format with certain optimizations. Then converting this intermediate code to SMT-LIB format and creating a model of the program in a valid SMT formula. Lastly, giving this model to a SMT checker (MathSAT5) to find if the program has a bug for the given execution length. 
 
 
-\section{What is LLMBC?}\label{overview-LLMBC}
+\section{What is LLMBC ?}\label{overview_of_llbmc}
 LLBMC (the low-level bounded model checker) is a static software analysis and verification tool for finding bugs in C (and, to some extent, in C++) programs. It is based on the technique of Bounded Model Checking. It is mainly intended for checking low-level system code.  It takes sequential C/C++ programs and finds bugs and runtime errors. It can help 
 software engineers to improve the quality of software and obtain stable and secure programs and reduce the time and effort needed for software testing. 
 
@@ -87,7 +81,7 @@ We will explain more on these built-in-checks in subsequent sections.
 
 The main limitation of LLBMC is its incompleteness. As it is just an implementation of the idea of BMC, its makes it incomplete due to incompleteness of the bounded analysis. Other limitations are it's high program-dependency and scalability. 
 
-\section{Why Low-Level}\label{Low-Level}
+\section{Why Low-Level ?}\label{Low-Level}
 We know that LLBMC takes a program in C code and finally reports bugs. However it does not directly work on source code. Applying BMC for verifying C programs is very hard and comes with many obstacles that have to be tackled. One of the most important differences is that the syntax (and thus semantics) of a high level programming language like C is much more complicated than a hardware description. Issues like memory allocation, (function) pointers, complex data structures, and function calls have to be managed. Further more going from C to C++ introduces more complex issues. Thats why instead of exploring the source code directly, LLBMC makes use of existing compiler technology and performs the analysis on an assembler-like compiler intermediate language. Such an intermediate language offers a much simpler syntax (and semantics), and thus eases a logical encoding of the verification problem considerably. We will describe more on how LLBMC uses LLVM-IR for the analysis. We can summarise the advantages of this approach as,
 \begin{itemize}
    \item The IR has much simpler syntax and semantics than C/C++. This makes it relatively easy to support (nearly) all language features.
@@ -105,8 +99,7 @@ Here we will see an example of loop unrolling for a simple program. We assume th
   \begin{centering}
     \includegraphics[width=\textwidth]{figures/bmc-example-1}\par
   \end{centering}
-  \caption{A simple dummy picture to demonstrate how
-           to include graphics into your report.}
+  \caption{A simple program with loop (left), and a static-single-assignment (SSA) form of this program after unwinding its for loop (right )}
   \label{fig:mesh1}
 \end{figure}
 
@@ -118,7 +111,7 @@ Consider the program in the left part of figure \ref{fig:mesh1}. The number of p
   \begin{centering}
     \includegraphics[width=0.80\textwidth]{figures/bmc-example-2}\par
   \end{centering}
-  \caption{formula after all the rewrite is donw.}
+  \caption{formula after all the rewrite is done. }
   \label{fig:mesh2}
 \end{figure}
 
@@ -126,7 +119,7 @@ The ternary operator \(c?x:y\) in the equation on the right of figure \ref{fig:m
 
 In this example we have shown how the idea works on the source code level. We will see how llbmc models this idea of Bounded Model Checking. Properties of a program are typically expressed  as pre-condition( \(assume\) ) or post-conditions( \(assert\) ). Where assume states a pre-condition that is assumed to hold at its location and assert states a post-condition that is to be checked at its location. The program  \(Prog\)  is correct if
 \[Prog \wedge \bigwedge assume \Rightarrow  \bigwedge assert\]
-is valid. This check is decided using SAT or SMT solver. 
+is valid. This check is decided using SAT or SMT solver.  Figures \ref{fig:mesh1} and \ref{fig:mesh2} shown in the example are taken from \cite{book decision procedures}.
 
 
 \section{LLBMC's Built-In Checks}\label{LLBMC?s Built-In Checks} LLBMC has an extensive set of built-in checks for commonly occurring bugs in C programs and user defined checks (specified via C?s assert function). Here we provide a brief description of this checks:
@@ -144,7 +137,7 @@ is valid. This check is decided using SAT or SMT solver.
 \end{itemize}
 
 
-\section{LLBMC approach}\label{lbmc approach}
+\section{LLBMC approach}\label{llbmc approach}
 Here we will explain how llbmc model the verification problem.  Figure \ref{fig:llbmc_overview} shows the overall structure of llbmc approach.  
 \begin{figure}[htb!]
   \begin{centering}
@@ -156,7 +149,7 @@ Here we will explain how llbmc model the verification problem.  Figure \ref{fig:
 
 
 
-\subsubsection{LLVM Intermediate Representation}
+\subsubsection*{LLVM Intermediate Representation}
 llbmc makes extensive use of llvm compiler framework. it uses the llvm compiler front end to get the program in LLVM abstract assembler from program source code. Since programs in LLVM assembler are already in \textit{static single assignment (SSA)} form, assignments to scalar variables are treated as logical equivalences. However, other LLVM instructions need to be handled. 
 In the context of llbmc the following LLVM instructions are important and we will show how each of these instructions are translated into the logic of bit-vectors and arrays. 
 \begin{itemize}
@@ -166,10 +159,10 @@ In the context of llbmc the following LLVM instructions are important and we wil
   \item \textit{Branch and phi} instructions.
 \end{itemize}
 
-\subsubsection{Function inlining and loop unrolling} 
+\subsubsection*{Function inlining and loop unrolling} 
 Before starting the process of logical encoding, the program must be transformed (from llvm-ir to llvm-ir) so that it finishes with a finite run. llbmc uses code provided by the LLVM libraries to do this function inlining and loop unrolling. The control flow graph get simplified after this transformation. After the loop unrolling the graph becomes directed acyclic graph. LLBMC uses the debug information generated by LLVM to report error trace back to user.
 
-\subsubsection{Logical Encoding}\label{Logical Encoding}
+\subsubsection*{Logical Encoding}\label{Logical Encoding}
 After function inlining and loop unrolling, llvm program is ready to be encoded into the logic of bit-vectors and arrays. The complete logical encoding is done in several stages. First the initial SMT encoding is done. Basic blocks are ( and their execution conditions) still present in this initial SMT encoding.  We will briefly explain how llbmc handles few important llvm instructions.
 \par \textit{Handling of assignments:} Since llvm assembly is in SSA form, assignments are treated as equalities.
 \par \textit{Handling of Three-address-code (TAC) Instructions:}  These instructions (like, e.g.,add, cmp, mul, sign or zero extension) are supported by SMT solvers. So their translation is straightforward.
@@ -202,15 +195,19 @@ llbmc introduces few predicates ( and needed formulas) on the memory state:
  \par \textit{Simplification of the ILR formula:} LLBMC uses term rewriting in order to simplify the ILR formula before passing it to an SMT solver. LLBMC implements  approximately 150 (conditional) rewrite rules \cite{llbmc0}. As all ILR's predicates for built-in checks are not supported by SMT-solver, those predicates are expanded. e.g. checks for logic and arithmetic shift which can easily be encoded in bit-vector logic. After expanding the predicates for the built-in checks and rewrite-based simplifications of the formula, it is ready to be passed to the SMT solver.
   
   
-  \subsubsection{Counterexample generation}\label{Counterexample generation} The simplified ILR formula is then passed to an SMT solver. If the formula is satisfiable, any satisfying assignment corresponds to a bug in the program. By mapping ILR variables to the corresponding instructions in the LLVM-IR program and simulating execution with these values, a trace of the LLVM-IR program that exhibits the bug can be obtained. 
+  \subsubsection*{Counterexample generation}\label{Counterexample generation} The simplified ILR formula is then passed to an SMT solver. If the formula is satisfiable, any satisfying assignment corresponds to a bug in the program. By mapping ILR variables to the corresponding instructions in the LLVM-IR program and simulating execution with these values, a trace of the LLVM-IR program that exhibits the bug can be obtained. 
   
   
 \section{Evaluation}\label{Evaluation}
 LLBMC can be compared with two other BMC tools: the C Bounded Model Checker CBMC  \cite{CBMC} and the Efficient SMT-Based
 11Context-Bounded Model Checker ESBMC  \cite{ESBMC}. According to paper \cite{llbmc0},  an empirical evaluation on a large collection of C programs is conducted.  The evaluation has shown that LLBMC compares favourably to CBMC and ESBMC, both in run-time and in number of found bugs. Furthermore, LLBMC has successfully been used on over 50 non-trivial C++ programs. 
-  
- \section{Conclusions}\label{conclusions}
-We worked hard, and achieved very little.
+
+\section{Summary and Conclusion}\label{summary and conclusion}
+As LLBMC is a bounded model checking tool, it inherits the shortcomings of BMC. However, it is the best technique to find shallow bugs, and it provides a full counterexample trace in case a bug is found. It supports the widest range of program constructions. This includes dynamically allocated data structures.
+On the other hand, completeness is only obtainable on very 'shallow' programs, i.e., programs
+without deep loops. 
+In this paper we have explored how LLBMC implements the idea of Model Checking in the context of program verification. We have tried to present an overview on the fundamental ideas and implementation techniques. We hope there will be more and more such tools and will be used by developer communities.  
+
  \begin{comment} 
 \begin{figure}[htb!]
   \begin{centering}
@@ -270,6 +267,22 @@ Lucas Cordeiro, Bernd Fischer, Joao Marques-Silva.
 \bibitem{CBMC} 
 Edmund Clarke, Daniel Kroening, and Flavio Lerda.
 \textit{A tool for checking ANSI-C programs}
+
+\bibitem{MC1} 
+Edmund M. Clarke, E Allen Emerson.
+\textit{Design and Synthesis of Synchronization Skeletons Using Branching Time Temporal Logic}.
+
+\bibitem{MC2} 
+Jean-Pierre Queille, Joseph Sifakis.
+\textit{Specification and verification of concurrent systems in CESAR}.
+
+\bibitem{MC3} 
+Vijay D?Silva, Daniel Kroening, Georg Weissenbacher.
+\textit{A Survey of Automated Techniques for Formal Software Verification}.
+
+\bibitem{book decision procedures} 
+Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
+
 
 \end{thebibliography}
 
