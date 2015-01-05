@@ -51,14 +51,15 @@ In formally, bounded model checking contains: A transition system, a temporal lo
 					
 In our work, the program flow is described as transition states for the BMC conversion. The easy transform between BMC and SMT formulas is highly beneficial because of the presence of highly optimised SMT solvers.
 
-\section{LLVM}\label{llvm}
-LLVM (Low Level Virtual Machine) is a compiler infrastructure; designed for compile-time, link-time, run-time, and "idle-time" optimization of programs written in different various programming languages. Initially designed for C and C++, LLVM now supports a lot of different languages like ActionScript, Ada, D, Fortran, GLSL, Haskell, Java, Julia, Objective-C, Python, Ruby, Rust, Scala.
-					
-LLVM supports a language-independent instruction set and type system. [3] Each instruction is in static single assignment form (SSA), meaning that each is assigned only once and cannot be assigned again. This helps simplify the analysis of dependencies among variables. LLVM allows code to be compiled statically, as it is under the traditional GCC system, or left for late-compiling from the IF to machine code in a just-in-time compiler (JIT) fashion similar to Java. The type system consists of primitive types such as integers or floats and five other derived types: Arrays, vectors, functions, structures and pointers. A type construct is represented by combining these given types in LLVM. For example, a class in C++ can be represented by a combination of structures, functions and arrays of function pointers.
-					
-LLVM is used in many areas because of its optimization supporting and competitive performance results. For example, Apple uses LLVM in its Xcode and Cocoa frameworks [10].
-					
-LLVM adapted SSA (Static Single Assignment) form. This provides serious advantages for formal conversions. The instruction set composed three address code instructions. Also, the LLVM instructions in Linux can generate CFG (control flow graphs) of the threads and the program which helps our conversion. Because LLVM-IR is represented in a similar format with 3 address assembly instructions, the adaptation period for unfamiliar users should not take very long, considering the developer already had some experience with Assembly. 
+\section{LLVM}
+LLVM (Low Level Virtual Machine)   \cite{llvm} is a compiler infrastructure; designed for compile-time, link-time, run-time, and idle-time optimisation of programs written in different various programming languages. Initially designed for C and C++, LLVM now supports a lot of different high level languages.
+
+LLBMC uses the LLVM compiler framework and its intermediate representation LLVM-IR. This makes it possible to use LLBMC
+on programs that are written in several programming languages, since compiler front-ends for, amongst others, C and C++, are available. LLVM's intermediate representation is an abstract, RISC-like assembler language for a register machine with an unbounded number of registers. Each instruction of LLVM-IR is in static single assignment form (SSA), meaning that each is assigned only once and cannot be assigned again. SSA form helps a lot to simplify the analysis of dependencies among variables. For this reason LLVM-IR is used by LLBMC.
+
+The use of SSA form makes it easier to write optimisations. LLVM compiler framework already provides a good list of optimisation passes.  LLBMC internally runs LLVM?s \texttt{mem2reg} pass in order to converts non-SSA form of LLVM IR into SSA form. 
+
+LLVM compiler framework also provide libraries for re-use.  LLBMC uses the LLVM libraries to do few transformation(specially for  function inlining and loop unrolling). 
 
 \section{SMT-LIB}\label{SMT-LIB}
 Satisfiability Modulo Theories (SMT) have the aim of testing logical formulas for if they are satisfiable or not, using one or more theories. An SMT instance is a formula in first order logic, where some function and predicate symbols might have additional interpretations, and SMT is the problem of determining if such a formula is satisfiable. In other words, imagine an instance of the Boolean satisfiability problem (SAT) in which some of the binary variables are replaced by predicates over a suitable set of non-binary variables. A predicate is basically a binary-valued function of non-binary variables [5] [8].
@@ -126,6 +127,21 @@ The ternary operator \(c?x:y\) in the equation on the right of figure \ref{fig:m
 In this example we have shown how the idea works on the source code level. We will see how llbmc models this idea of Bounded Model Checking. Properties of a program are typically expressed  as pre-condition( \(assume\) ) or post-conditions( \(assert\) ). Where assume states a pre-condition that is assumed to hold at its location and assert states a post-condition that is to be checked at its location. The program  \(Prog\)  is correct if
 \[Prog \wedge \bigwedge assume \Rightarrow  \bigwedge assert\]
 is valid. This check is decided using SAT or SMT solver. 
+
+
+\section{LLBMC's Built-In Checks}\label{LLBMC?s Built-In Checks} LLBMC has an extensive set of built-in checks for commonly occurring bugs in C programs and user defined checks (specified via C?s assert function). Here we provide a brief description of this checks:
+\begin{itemize}
+  \item \textbf{Arithmetic overflow and underflow:}Arithmetic overflow occurs when the result of a signed or unsigned arithmetic operation cannot be represented with the available number of bits.
+\item \textbf{Logic or arithmetic shift exceeding the bit-width:} Shift operations like  \(n << l\)  is undefined if  \(l \) is larger than or equal to the bit-width of  \(n\). LLBMC supports checks for this kind of error by default since this behavior is not expected by most programmers.
+\item \textbf{Memory access at invalid addresses:} An access operation for an object on the heap is only valid if it is completely contained within a block of memory which was previously allocated using \texttt{malloc}. LLBMC detects invalid memory accesses on the stack, on the heap, and for global variables.
+\item \textbf{Invalid memory allocation:}Heap memory allocations are considered invalid if a memory block of the requested size can not be allocated. 
+\item \textbf{Invalid memory de-allocation:} Only allocated memory is allowed to be de-allocated.
+\item \textbf{Overlapping memory regions in \texttt{memcpy}:}  \texttt{memcpy} is used the content of a block of memory from one location to another. if the source and destination blocks overlap then the result is undefined.
+\item \textbf{Memory leaks:} Memory leaks occur when blocks of memory are allocated, but never de-allocated.
+\item \textbf{User defined assertions:} LLBMC allows user defined properties expressed as assert or assume. 
+\item \textbf{BMC specific assertions:} LLBMC is able to automatically detect insufficient bounds for nested function calls and loop iterations.
+
+\end{itemize}
 
 
 \section{LLBMC approach}\label{lbmc approach}
@@ -214,12 +230,18 @@ We worked hard, and achieved very little.
 \end{comment}
 
 \begin{thebibliography}{9}
+
+\bibitem{llvm} 
+Chris Lattner, Vikram Adve.
+\textit{LLVM: A Compilation Framework for Lifelong Program Analysis \& Transformation}.
+\texttt{http://llvm.org}
+
 \bibitem{bmc} 
 Edmund Clarke, Armin Biere, Richard Raimi and Yunshan Zhu.
 \textit{Bounded Model Checking Using Satisfiability Solving}.
 
 \bibitem{1} 
-Armin Biere, Alessandro Cimatti, Edmund Clarke, Yunshan Zhu
+Armin Biere, Alessandro Cimatti, Edmund Clarke, Yunshan Zhu.
 \textit{Symbolic Model Checking without BDDs}. 
 
 \bibitem{llbmc} 
