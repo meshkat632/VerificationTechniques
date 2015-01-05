@@ -41,7 +41,7 @@ Finally, Section~\ref{summary and conclusion} gives the remarks and conclusions.
 \section{Background}\label{background}
 \subsubsection*{Verification problem}\label{verification problem}
 In industry we see the use of testing to ensure software quality and even to find bugs. However such quality guarantees do not reflect to \textit{correctness} of  the system. As we know that ensuring the absence of all errors in a design is usually too expensive. So all testing based approaches e.g. random testing and automated test-case generation are incomplete. The other approach depends on the fact that systems can be viewed as mathematical objects with well-specified behaviour. Or we can specify the system (intended behaviour) using mathematical logic. Then one can reason about whether the system meets its specification or not. This field of study has been active and it is often referred to as formal methods.
-The \textit{verification problem} is: Given program \textit{C} and specification \textit{P} determine whether or not the behaviour of \textit{C} meets the specification \textit{P}. We need automatic procedure which will use concrete mathematical reasoning to report design bug.
+The \textit{verification problem} is: Given program \textit{C} and specification \textit{P} determine whether or not the behaviour of \textit{C} meets the specification \textit{P} \cite{model checking emerson}. We need automatic procedure which will use concrete mathematical reasoning to report design bug.
 
 \subsubsection*{Software Model Checking}\label{Software Model Checking}
 Model checking is an algorithmic method for determining if model of a system satisfies a correctness specification \cite{MC1},\cite{MC2}. A model of a program consists of \textit{states} and \textit{transitions}, and a specification or \textit{property} is a logical formula. A state of the program is an evaluation of the program counter, the values of variables and the configuration of the stack and the heap. Transitions describe how a program evolves from one state to another. Model checking algorithms exhaustively examine the reachable states of a program. This procedure is guaranteed to terminate if the state space is finite. If a state violating a correctness property is found, a \textit{counterexample}{ an execution trace demonstrating the error) is produced. Model checking tools verify partial specifications, usually classified as \textit{safety} or \textit{liveness} properties. Where, safety properties express the unreachability of bad states, such as those in which an assertion violation, null pointer dereference or buffer overflow has occurred. Liveness properties express that something good eventually happens, like the condition that requests must be served eventually, or that a program must eventually terminate \cite{MC3}.
@@ -228,6 +228,7 @@ In this paper we have explored how LLBMC implements the idea of Model Checking i
 \end{comment}
 
 \begin{thebibliography}{9}
+
 \bibitem{bmc} 
 Edmund Clarke, Armin Biere, Richard Raimi, Yunshan Zhu.
 \textit{Bounded Model Checking Using Satisfiability Solving}.
@@ -295,6 +296,11 @@ Chapter 6 and 7,  Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
 Chris Lattner, Vikram Adve.
 \textit{LLVM: A Compilation Framework for Lifelong Program Analysis \& Transformation}.
 \texttt{http://llvm.org}
+
+\bibitem{model checking emerson} 
+E. Allen Emerson
+\textit{The beginning of model checking: A personal perspective.}
+25 Years of Model Checking. Springer Berlin Heidelberg, 2008. 27-45.
 
 \end{thebibliography}
 
