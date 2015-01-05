@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.11.30)  5 JAN 2015 21:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.11.30)  5 JAN 2015 21:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -93,7 +93,7 @@ Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
 LaTeX Warning: Unused global option(s):
     [14pt].
 
-(./simple.aux)
+No file simple.aux.
 \openout1 = `simple.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 7.
@@ -108,7 +108,6 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 7.
 LaTeX Font Info:    ... okay on input line 7.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -206,15 +205,45 @@ Missing character: There is no ü in font cmr10!
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 
-LaTeX Warning: Reference `LLBMC approach' on page 2 undefined on input line 38.
+LaTeX Warning: Reference `background' on page 2 undefined on input line 35.
 
+
+LaTeX Warning: Reference `overview_of_llbmc' on page 2 undefined on input line 
+36.
+
+
+LaTeX Warning: Reference `Software Bounded Model Checking' on page 2 undefined 
+on input line 37.
+
+
+LaTeX Warning: Reference `llbmc approach' on page 2 undefined on input line 38.
+
+
+
+LaTeX Warning: Reference `summary and conclusion' on page 2 undefined on input 
+line 39.
+
+
+LaTeX Warning: Citation `MC1' on page 2 undefined on input line 47.
+
+
+LaTeX Warning: Citation `MC2' on page 2 undefined on input line 47.
+
+
+LaTeX Warning: Citation `MC3' on page 2 undefined on input line 47.
 
 [2]
+
+LaTeX Warning: Citation `1' on page 3 undefined on input line 53.
+
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 53.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 53.
- [3] [4]
+
+LaTeX Warning: Citation `llvm' on page 3 undefined on input line 57.
+
+[3] [4]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 87.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
@@ -229,15 +258,40 @@ File: figures/bmc-example-1.png Graphic file (type png)
 Package pdftex.def Info: figures/bmc-example-1.png used on input line 100.
 (pdftex.def)             Requested size: 433.62pt x 116.55017pt.
 
+
+LaTeX Warning: Reference `fig:mesh1' on page 5 undefined on input line 108.
+
 <figures/bmc-example-2.png, id=25, 932.48375pt x 197.73875pt>
 File: figures/bmc-example-2.png Graphic file (type png)
 
 <use figures/bmc-example-2.png>
 Package pdftex.def Info: figures/bmc-example-2.png used on input line 112.
 (pdftex.def)             Requested size: 346.89731pt x 73.56046pt.
- [5] [6 <./figures/bmc-example-1.png> <./figures/bmc-example-2.png>]
+
+
+LaTeX Warning: Reference `fig:mesh1' on page 5 undefined on input line 118.
+
+
+LaTeX Warning: Reference `fig:mesh2' on page 5 undefined on input line 118.
+
+[5]
+
+LaTeX Warning: Reference `fig:mesh1' on page 6 undefined on input line 122.
+
+
+LaTeX Warning: Reference `fig:mesh2' on page 6 undefined on input line 122.
+
+
+LaTeX Warning: Citation `book decision procedures' on page 6 undefined on input
+ line 122.
+
+[6 <./figures/bmc-example-1.png> <./figures/bmc-example-2.png>]
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
 (Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 132.
+
+
+LaTeX Warning: Reference `fig:llbmc_overview' on page 7 undefined on input line
+ 141.
 
 <figures/llbmc_overview.png, id=38, 914.41624pt x 349.305pt>
 File: figures/llbmc_overview.png Graphic file (type png)
@@ -250,8 +304,32 @@ Overfull \hbox (23.587pt too wide) in paragraph at lines 144--144
  [][] 
  []
 
-[7] [8 <./figures/llbmc_overview.png>] [9] [10]
-Underfull \hbox (badness 4013) in paragraph at lines 245--248
+
+LaTeX Warning: Citation `llbmc2' on page 7 undefined on input line 146.
+
+[7]
+
+LaTeX Warning: Citation `llbmc2' on page 8 undefined on input line 169.
+
+[8 <./figures/llbmc_overview.png>]
+
+LaTeX Warning: Citation `llbmc2' on page 9 undefined on input line 191.
+
+
+LaTeX Warning: Citation `llbmc0' on page 9 undefined on input line 195.
+
+[9]
+
+LaTeX Warning: Citation `CBMC' on page 10 undefined on input line 202.
+
+
+LaTeX Warning: Citation `ESBMC' on page 10 undefined on input line 203.
+
+
+LaTeX Warning: Citation `llbmc0' on page 10 undefined on input line 203.
+
+[10]
+Underfull \hbox (badness 4013) in paragraph at lines 242--245
 []\OT1/cmr/m/n/10 Stephan Falke, Flo-rian Merz, Carsten Sinz. \OT1/cmr/m/it/10 
 The Bounded Model Checker LLBMC\OT1/cmr/m/n/10 .
  []
@@ -260,19 +338,22 @@ The Bounded Model Checker LLBMC\OT1/cmr/m/n/10 .
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  )
 (\end occurred inside a group at level 1)
 
 ### simple group (level 1) entered at line 47 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 2048 strings out of 493117
- 30058 string characters out of 6135432
- 97740 words of memory out of 5000000
- 5506 multiletter control sequences out of 15000+600000
+ 2045 strings out of 493117
+ 30020 string characters out of 6135432
+ 97566 words of memory out of 5000000
+ 5505 multiletter control sequences out of 15000+600000
  6020 words of font info for 22 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,7n,31p,1282b,270s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,7n,31p,1282b,273s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmbx10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/
 cm/cmbx12.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/c
@@ -286,7 +367,7 @@ b></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb><
 /usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></
 usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on simple.pdf (11 pages, 294482 bytes).
+Output written on simple.pdf (11 pages, 294887 bytes).
 PDF statistics:
  99 PDF objects out of 1000 (max. 8388607)
  66 compressed objects within 1 object stream

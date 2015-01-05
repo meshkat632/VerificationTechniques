@@ -35,7 +35,7 @@ The remainder of this article is organised as follows.
 Section~\ref{background} gives overview of the basic notions.
 Section~\ref{overview_of_llbmc} provides an overview of LLBMC tool.
 Section~\ref{Software Bounded Model Checking} gives a simple example BMC.
-Section~\ref{LLBMC approach} gives overview of LLBMC approach.
+Section~\ref{llbmc approach} gives overview of LLBMC approach.
 Finally, Section~\ref{summary and conclusion} gives the remarks and conclusions.
 
 \section{Background}\label{background}
@@ -119,7 +119,7 @@ The ternary operator \(c?x:y\) in the equation on the right of figure \ref{fig:m
 
 In this example we have shown how the idea works on the source code level. We will see how LLBMC models this idea of Bounded Model Checking. Properties of a program are typically expressed  as pre-condition( \(assume\) ) or post-conditions( \(assert\) ). Where assume states a pre-condition that is assumed to hold at its location and assert states a post-condition that is to be checked at its location. The program  \(Prog\)  is correct if
 \[Prog \wedge \bigwedge assume \Rightarrow  \bigwedge assert\]
-is valid. This check is decided using SAT or SMT solver. Figures \ref{fig:mesh1} and \ref{fig:mesh2} shown in the example are taken from \cite{book decision procedures}.
+is valid. This check is decided using SAT or SMT solver. Figures \ref{fig:mesh1}, \ref{fig:mesh2} and the example itself are taken from \cite{book decision procedures}.
 
 
 \section{LLBMC's Built-In Checks}\label{LLBMC?s Built-In Checks} LLBMC has an extensive set of built-in checks for commonly occurring bugs in C programs and user defined checks (specified via C?s assert function). Here we provide a brief description of this checks:
@@ -165,7 +165,7 @@ Before starting the process of logical encoding, the program must be transformed
 \subsubsection*{Logical Encoding}\label{Logical Encoding}
 After function inlining and loop unrolling, LLVM program is ready to be encoded into the logic of bit-vectors and arrays. The complete logical encoding is done in several stages. First the initial SMT encoding is done. Basic blocks are ( and their execution conditions) still present in this initial SMT encoding. We will briefly explain how LLBMC handles few important LLVM instructions.
 \par \textit{Handling of assignments:} Since LLVM assembly is in SSA form, assignments are treated as equalities.
-\par \textit{Handling of Three-address-code (TAC) Instructions:}  These instructions (like, e.g. \texttt{add, cmp, mul etc)} are supported by SMT solvers. So their translation is straightforward.
+\par \textit{Handling of Three-address-code (TAC) Instructions:}  These instructions (like, e.g. \texttt{add, cmp, mul )} are supported by SMT solvers. So their translation is straightforward.
 \par \textit{Handling of phi Instructions:} Every phi instruction can be translated into a sequence of ITE (if-then-else) operators, which are also supported by SMT solvers. More on this can be found in \cite{llbmc2}.
 \par \textit{Handling of The }\texttt{getelementptr}  \textit{Instruction:} Every \texttt{getelementptr}  instruction is simply transformed into a linear equation as shown bellow.
 \[q = \texttt{getelementptr} \  p, o_1, \cdots , o_k \   \rightarrow  \   q = p + o_1 . s_1 + \cdots  + o_k .s_k \] 
@@ -202,6 +202,7 @@ LLBMC introduces few predicates ( and needed formulas) on the memory state:
 LLBMC can be compared with two other BMC tools: the C Bounded Model Checker CBMC  \cite{CBMC} and the Efficient SMT-Based
 11Context-Bounded Model Checker ESBMC  \cite{ESBMC}. According to paper \cite{llbmc0},  an empirical evaluation on a large collection of C programs is conducted. The evaluation has shown that LLBMC compares favourably to CBMC and ESBMC, both in run-time and in number of found bugs. Furthermore, LLBMC has successfully been used on over 50 non-trivial C++ programs. 
 
+
 \section{Summary and Conclusion}\label{summary and conclusion}
 As LLBMC is a bounded model checking tool, it inherits the shortcomings of BMC. However, it is the best technique to find shallow bugs, and it provides a full counterexample trace in case a bug is found. It supports the widest range of program constructions. This includes dynamically allocated data structures.
 On the other hand, completeness is only obtainable on very 'shallow' programs, i.e., programs
@@ -227,19 +228,15 @@ In this paper we have explored how LLBMC implements the idea of Model Checking i
 \end{comment}
 
 \begin{thebibliography}{9}
-
-\bibitem{llvm} 
-Chris Lattner, Vikram Adve.
-\textit{LLVM: A Compilation Framework for Lifelong Program Analysis \& Transformation}.
-\texttt{http://llvm.org}
-
 \bibitem{bmc} 
-Edmund Clarke, Armin Biere, Richard Raimi and Yunshan Zhu.
+Edmund Clarke, Armin Biere, Richard Raimi, Yunshan Zhu.
 \textit{Bounded Model Checking Using Satisfiability Solving}.
+Formal Methods in System Design 19.1 (2001): 7-34.
 
 \bibitem{1} 
 Armin Biere, Alessandro Cimatti, Edmund Clarke, Yunshan Zhu.
 \textit{Symbolic Model Checking without BDDs}. 
+Springer Berlin Heidelberg, 1999.
 
 \bibitem{llbmc} 
 Stephan Falke, Florian Merz, Carsten Sinz.
@@ -247,42 +244,53 @@ Stephan Falke, Florian Merz, Carsten Sinz.
 http://llbmc.org
 
 \bibitem{llbmc2} 
-Stephan Falke, Florian Merz and Carsten Sinz.
+Stephan Falke, Florian Merz, Carsten Sinz.
 \textit{A Precise Memory Model for Low-Level Bounded Model Checking}.
-http://llbmc.org.
+Proceedings of the 5th international conference on Systems software verification. USENIX Association, 2010.
 
 \bibitem{llbmc3} 
-Stephan Falke, Florian Merz and Carsten Sinz.
+Stephan Falke, Florian Merz, Carsten Sinz.
 \textit{A Theory of C-Style Memory Allocation}.
-\texttt{http://llbmc.org/files/papers/SMT11.pdf}
+Proc. SMT (2011): 71-80.
 
 \bibitem{llbmc0} 
-Stephan Falke, Florian Merz and Carsten Sinz.
-\textit{LLBMC: Bounded Model Checking of C and C++ Programs Using a Compiler IR*}
+Stephan Falke, Florian Merz, Carsten Sinz.
+\textit{LLBMC: Bounded Model Checking of C and C++ Programs Using a Compiler IR}
+Verified Software: Theories, Tools, Experiments. Springer Berlin Heidelberg, 2012. 146-161.
 
 \bibitem{ESBMC} 
-Lucas Cordeiro, Bernd Fischer, Joao Marques-Silva.
+Lucas Cordeiro, Bernd Fischer, Joao Marques Silva.
 \textit{SMT-based bounded model checking for embedded ANSI-C software}
+Software Engineering, IEEE Transactions on 38.4 (2012): 957-974.
 
 \bibitem{CBMC} 
-Edmund Clarke, Daniel Kroening, and Flavio Lerda.
+Edmund Clarke, Daniel Kroening, Flavio Lerda.
 \textit{A tool for checking ANSI-C programs}
+Tools and Algorithms for the Construction and Analysis of Systems. Springer Berlin Heidelberg, 2004. 168-176.
 
 \bibitem{MC1} 
 Edmund M. Clarke, E Allen Emerson.
 \textit{Design and Synthesis of Synchronization Skeletons Using Branching Time Temporal Logic}.
+Springer Berlin Heidelberg, 1982.
 
 \bibitem{MC2} 
 Jean-Pierre Queille, Joseph Sifakis.
 \textit{Specification and verification of concurrent systems in CESAR}.
+International Symposium on Programming, 1982 - Springer.
 
 \bibitem{MC3} 
 Vijay D'Silva, Daniel Kroening, Georg Weissenbacher.
 \textit{A Survey of Automated Techniques for Formal Software Verification}.
+Computer-Aided Design of Integrated Circuits and Systems, IEEE Transactions on 27.7 (2008): 1165-1178.
 
 \bibitem{book decision procedures} 
 Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
+Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
 
+\bibitem{llvm} 
+Chris Lattner, Vikram Adve.
+\textit{LLVM: A Compilation Framework for Lifelong Program Analysis \& Transformation}.
+\texttt{http://llvm.org}
 
 \end{thebibliography}
 
