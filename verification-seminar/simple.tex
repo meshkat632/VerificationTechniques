@@ -2,7 +2,18 @@
 \usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{graphicx}
 \usepackage{verbatim} 
+\usepackage{listings}
+\lstset{ captionpos=b}
+\usepackage{amsmath}
+\usepackage{fancybox}
 \renewcommand{\baselinestretch}{1.3}
+
+\makeatletter
+\newenvironment{CenteredBox}{% 
+\begin{Sbox}}{% Save the content in a box
+\end{Sbox}\centerline{\parbox{\wd\@Sbox}{\TheSbox}}}% And output it centered
+\makeatother
+
 
 \begin{document}
 
@@ -10,8 +21,8 @@
 
     Rheinisch-Westf\"alische Technische Hochschule Aachen \\
     Research Group Computer Science 2\\
-    Prof. Dr. Jürgen Giesl\\[6ex]
-    Seminar: Verification Techniques in WS 2014/15\\[12ex]                          % auch Seminar Titel und Datum ändern!!!
+    Prof. Dr. J\"urgen Giesl\\[6ex]
+    Seminar: Verification Techniques in WS 2014/15\\[12ex]                          % auch Seminar Titel und Datum andern!!!
    
     \LARGE
     \textbf{Finding Hard Bugs in C with Bounded Model Checking} \\[6ex]
@@ -93,27 +104,54 @@ We know that LLBMC takes a program in C code and finally reports bugs. However i
 \section{Software Bounded Model Checking}\label{Software Bounded Model Checking}
 Here we briefly describe the main ideas of bounded model checking for software especially for programs written in C/C++. Generally programs are composed of data structures such as linked lists or trees. The unbounded nature of such data structures may give rise to infinite program runs. Which is very common in all kind of systems e.g. in reactive or interactive systems. Property checking of such programs is in general undecidable. Here bounded model checking provides a solution. BMC limits such program runs to finite ones, thereby achieving decidability. The bound is imposed by restricting the number of nested function calls and loop iterations that are considered. BMC performs function inlining and loop unrolling (up to these bounds), resulting in one large function that is then subject to further analysis. Since the analysis is done on the finite run of the program, it  can only look for bugs up to specific depth. This is good enough for many applications e.g. embedded systems. 
 
-Here we will see an example of loop unrolling for a simple program. We assume that properties for the program are given by assertions from  the user. And we need to verify that these properties holds for the program where the loop iteration is bounded by number k. The states that the program can reach within this bound are represented symbolically by a formula, together with the negation of the given condition. Then this combined formula is feed to SAT solver. If the formula is satisfiable, then there exists a path in the program that violates the property.
+Here we will see an example of loop unrolling for a simple program. We assume that properties for the program are given by assertions from  the user. And we need to verify that these properties holds for the program where the loop iteration is bounded by number k. The states that the program can reach within this bound are represented symbolically by a formula, together with the negation of the given condition. Then this combined formula is feed to SAT solver. If the formula is satisfiable, then there exists a path in the program that violates the property. 
 
-\begin{figure}[htb!]
-  \begin{centering}
-    \includegraphics[width=\textwidth]{figures/bmc-example-1}\par
-  \end{centering}
-  \caption{A simple program with loop (left), and a static-single-assignment (SSA) form of this program after unwinding its for loop (right )}
-  \label{fig:mesh1}
+\begin{figure}[ht]
+\centering
+\begin{minipage}[t]{0.45\linewidth}
+\begin{lstlisting}
+int a[N]; unsigned c;
+   ...
+   c = 0;
+   for(i = 0; i < N; i++)
+       if(a[i] == 0)
+           c++;
+\end{lstlisting}
+\end{minipage}
+\quad
+\begin{minipage}[t]{0.45\linewidth}
+\begin{gather*}
+c_1 = 0 \  \wedge\\
+c_2 = (a[0] = 0) \ ?\  c_1 + 1 : c1 \ \wedge\\
+c_3 = (a[1] = 0)\  ?\  c_2 + 1 : c2 \ \wedge\\
+...\\
+c_{N+1} = (a[N-1] = 0) \ ?\  c_N + 1 : c_N
+\end{gather*}
+\end{minipage}
+\caption{A simple program with loop and static-single-assignment (SSA) form of this program after unwinding its for loop.}
 \end{figure}
+
+
+
 
 
 
 Consider the program in the left part of figure \ref{fig:mesh1}. The number of paths through this program is exponential in \(N\), as each of the \(a[i]\) elements can be either zero or nonzero. Despite the exponential number of paths through the program, its states can be encoded with a formula of size linear in \(N\), as demonstrated in the right part of the figure. This formula encodes the states of the original program on its left, using the static-single-assignment (SSA) form. 		 	 	 		
+ 
+ 
 
-\begin{figure}[htb!]
-  \begin{centering}
-    \includegraphics[width=0.80\textwidth]{figures/bmc-example-2}\par
-  \end{centering}
-  \caption{formula after all the rewrite is done. }
-  \label{fig:mesh2}
+
+\begin{figure}[thp]
+\begin{gather*}
+c_1 = 0 \  \wedge \\
+((a[0] = 0 \  \wedge c_2 = c_1 + 1)  \ \vee (a[0] \neq 0\  \wedge c_2 = c_1)) \  \wedge \\
+((a[1] = 0 \  \wedge c_3 = c_2 + 1)  \ \vee \  (a[1] \neq 0\  \wedge c_3 = c_2)) \  \wedge \\
+... \\
+((a[N-1] = 0 \  \wedge c_{N+1} = c_N + 1)  \ \vee \  (a[N-1] \neq 0\  \wedge c_{N+1} = c_N)).
+\end{gather*}
+\caption{formula after all the rewrite is done.}
 \end{figure}
+
 
 The ternary operator \(c?x:y\) in the equation on the right of figure \ref{fig:mesh1} can be rewritten using a disjunction, as shown in figure \ref{fig:mesh2}. After the rewrite we have the formula in DNF. Now to verify that some assertion provided by user holds at a specific, we add a constraint corresponding to the negation of this assertion. For example, to prove that at the end of the program \(c \leq N\) , we need to conjoin formula with \((c_{N+1}>N)\). Now we can test this combined formula for satisfiability. 
 
@@ -285,11 +323,13 @@ Vijay D'Silva, Daniel Kroening, Georg Weissenbacher.
 Computer-Aided Design of Integrated Circuits and Systems, IEEE Transactions on 27.7 (2008): 1165-1178.
 
 \bibitem{book decision procedures} 
-Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
+Daniel Kroening, Ofer Strichman.
+\textit{Decision Procedures An Algorithmic Point of View}.
 Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
 
 \bibitem{bit vectors and arrays} 
-Daniel Kroening, Ofer Strichman.\textit{Decision Procedures An Algorithmic Point of View}.
+Daniel Kroening, Ofer Strichman.
+\textit{Decision Procedures An Algorithmic Point of View}.
 Chapter 6 and 7,  Berlin: Springer, 2008. Print. ISBN 978-3-540-74104-6
 
 \bibitem{llvm} 
